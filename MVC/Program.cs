@@ -1,14 +1,42 @@
 using Data.Models;
 using MVC.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<Data.DB.DataContext>(options => options.UseInMemoryDatabase("MVC"));
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(
+        options =>
+        {
+            options.ExpireTimeSpan = TimeSpan.FromHours(1);
+            options.LoginPath = "/Home/Login";
+            options.AccessDeniedPath = "/Home/AccessDenied";
+        }
+    );
+
+builder.Services.AddAuthorization(
+    options =>
+    {
+        options.DefaultPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
+    }
+);
+// NOW add services to the container.
+builder.Services.AddControllersWithViews(
+    options =>
+    {
+        options.Filters.Add(new AuthorizeFilter());
+    }
+);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +50,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

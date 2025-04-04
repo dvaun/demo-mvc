@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using MVC.Models;
 using MVC.Services;
 using Data.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace MVC.Controllers;
 
@@ -10,12 +14,20 @@ namespace MVC.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private IMemberService _memberService;
+    private readonly IMemberService _memberService;
+    private readonly IUserService _userService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public HomeController(IMemberService memberService, ILogger<HomeController> logger)
+    public HomeController(
+        IMemberService memberService,
+        ILogger<HomeController> logger,
+        IUserService userService,
+        IHttpContextAccessor contextAccessor)
     {
         _memberService = memberService;
         _logger = logger;
+        _userService = userService;
+        _httpContextAccessor = contextAccessor;
     }
 
     public IActionResult Index()
@@ -55,6 +67,56 @@ public class HomeController : Controller
         var member = _memberService.GetMemberByID(memberID);
 
         return View(member);
+    }
+
+    [AllowAnonymous]
+    public IActionResult Login(string returnUrl)
+    {
+        return View(new LoginViewModel { returnUrl = returnUrl });
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(LoginViewModel loginDetails)
+    {
+        var isValidUser = _userService.IsUserValid(loginDetails.username, loginDetails.password);
+
+        if (isValidUser)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, loginDetails.username),
+                new Claim(ClaimTypes.Role, "Admin")
+            };
+
+            var identity = new ClaimsIdentity(
+                claims,
+                "default",
+                ClaimTypes.Name,
+                ClaimTypes.Role
+            );
+
+            var principal = new ClaimsPrincipal(identity);
+            var authProps = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                ExpiresUtc = DateTimeOffset.Now.AddHours(1),
+                IsPersistent = true,
+            };
+
+            await _httpContextAccessor.HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                authProps
+            );
+
+            if (String.IsNullOrEmpty(loginDetails.returnUrl))
+                return RedirectToAction("Index", "Home");
+            else
+                return Redirect(loginDetails.returnUrl);
+        }
+
+        return View(new LoginViewModel() { returnUrl = loginDetails.returnUrl, username = loginDetails.username });
     }
 
     public IActionResult Privacy()
