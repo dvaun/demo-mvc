@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<Data.DB.DataContext>(options => options.UseInMemoryDatabase("MVC"));
+builder.Services.AddDbContext<Data.DB.DataContext>(options => options.UseSqlite("Data Source=mvc.db"));
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
