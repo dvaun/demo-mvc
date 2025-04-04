@@ -1,8 +1,36 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Membership List";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Members</h1>
 </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Upcoming Gift</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.HasData)
+        {
+            @foreach (var member in Model.Members)
+            {
+                <tr>
+                    <td>@member.FirstName</td>
+                    <td>@member.LastName</td>
+                    <td>@member.DOB</td>
+                    <td>@member.GetMemberGift()</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No data!</p>
+        }
+    </tbody>
+</table>
