@@ -20,6 +20,7 @@
             <th scope="col">Last</th>
             <th scope="col">Date of Birth</th>
             <th scope="col">Upcoming Gift</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -27,12 +28,16 @@
         {
             @foreach (var member in Model.Members)
             {
-                <tr>
-                    <td>@member.FirstName</td>
-                    <td>@member.LastName</td>
-                    <td>@member.DOB</td>
-                    <td>@member.GetMemberGift()</td>
-                </tr>
+                    <tr>
+                        <td>@member.FirstName</td>
+                        <td>@member.LastName</td>
+                        <td>@member.DOB</td>
+                        <td>@member.GetMemberGift()</td>
+                        <td>
+                <a asp-area="" asp-controller="Home" asp-action="GetMember" asp-route-memberID="@member.MembershipID">Details</a>
+                </td>
+                    </tr>
+                
             }
         }
         else

@@ -7,6 +7,7 @@ namespace MVC.Services
     {
         IEnumerable<Member> GetMembers();
         void AddMember(Member member);
+        Member? GetMemberByID(string membershipID);
     }
 
     public class MemberService : IMemberService
@@ -29,6 +30,11 @@ namespace MVC.Services
         {
             _context.Members.Add(member);
             _context.SaveChanges();
+        }
+
+        public Member? GetMemberByID(string membershipID)
+        {
+            return _context.Members.FirstOrDefault(member => member.MembershipID == membershipID);
         }
     }
 }

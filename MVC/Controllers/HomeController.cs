@@ -6,6 +6,7 @@ using Data.Models;
 
 namespace MVC.Controllers;
 
+
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -21,7 +22,7 @@ public class HomeController : Controller
     {
         var memberViewModel = new MemberListViewModel {
             Members = _memberService.GetMembers()
-                                    .OrderBy(memberViewModel => member.DOB)
+                                    .OrderBy(member => member.DOB)
                                     .ToList()
         };
         return View("Index", memberViewModel);
@@ -47,6 +48,13 @@ public class HomeController : Controller
         _memberService.AddMember(member);
 
         return Index();
+    }
+
+    public IActionResult GetMember(string memberID)
+    {
+        var member = _memberService.GetMemberByID(memberID);
+
+        return View(member);
     }
 
     public IActionResult Privacy()

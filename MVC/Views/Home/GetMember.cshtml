@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Member Page";
+}
+
+<div class="text-left">
+    <h1 class="p-2 display-4">Member Details</h1>
+    @if (Model != null)
+    {
+        <dl class="row p-2">
+            <dt class="col-sm-3">Member Name</dt>
+            <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+
+            <dt class="col-sm-3">Membership #</dt>
+            <dd class="col-sm-9">@Model.MembershipID</dd>
+
+            <dt class="col-sm-3">Date of Birth</dt>
+            <dd class="col-sm-9">@Model.DOB</dd>
+
+            <dt class="col-sm-3">Phone number</dt>
+            <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+            <dt class="col-sm-3">Language Preference</dt>
+            <dd class="col-sm-9">@Model.LanguagePreference</dd>
+
+            <dt class="col-sm-3">Address</dt>
+            <dd class="col-sm-9">@(String.IsNullOrEmpty(Model.Address) ? "n/a" : Model.Address)</dd>
+        </dl>
+        <div class="mt-4">
+            <a asp-area="" asp-controller="Home" asp-action="Index">
+                <button type="button" class="btn btn-light">Back to Full List</button>
+            </a>
+        </div>
+    }
+    else
+    {
+        <p>Can't find a member with that ID!</p>
+    }
+</div>
