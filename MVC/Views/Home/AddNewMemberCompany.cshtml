@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Add New Company";
+}
+
+<div class="text-left">
+    <h1 class="p-2 display-4">Add New Company</h1>
+    <form asp-action="AddNewMemberCompany" method="post">
+        <div class="row p-2">
+            <div class="col">
+                <label for="companyid" class="form-label">Company Id #</label>
+                <input type="text" id="companyid" name="Id" class="form-control" required />
+            </div>
+            <div class="col">
+                <label for="name" class="form-label">Company Name</label>
+                <input type="text" id="name" name="Name" class="form-control" required />
+            </div>
+            <div class="col">
+                <label for="acronym" class="form-label">Membership Acronym</label>
+                <input type="text" id="acronym" name="MembershipAcronym" class="form-control" required />
+            </div>
+        </div>
+        <div class="p-2 mt-4">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-area="" asp-controller="Home" asp-action="Companies">
+                <button type="button" class="btn btn-link">Cancel</button>
+            </a>
+        </div>
+    </form>
+</div>

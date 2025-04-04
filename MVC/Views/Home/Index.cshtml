@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Membership List";
 }
+@using Data.Models;
 
 <div class="text-left flex-row d-flex justify-content-between align-items-center">
     <h1 class="p-2 display-4">Members</h1>
@@ -18,6 +19,7 @@
         <tr>
             <th scope="col">First</th>
             <th scope="col">Last</th>
+            <th scope="col">Member Company</th>
             <th scope="col">Date of Birth</th>
             <th scope="col">Upcoming Gift</th>
             <th scope="col">Action</th>
@@ -31,6 +33,16 @@
                     <tr>
                         <td>@member.FirstName</td>
                         <td>@member.LastName</td>
+                        <td>
+                            @if (Model.CompanyMap.TryGetValue(member.MembershipID, out MemberCompany company))
+                            {
+                                @company.Name
+                            }
+                            else
+                            {
+                                <p>Unknown</p>
+                            }
+                        </td>
                         <td>@member.DOB</td>
                         <td>@member.GetMemberGift()</td>
                         <td>
