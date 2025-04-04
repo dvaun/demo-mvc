@@ -17,17 +17,20 @@ public class HomeController : Controller
     private readonly IMemberService _memberService;
     private readonly IUserService _userService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMemberCompanyService _memberCompanyService;
 
     public HomeController(
         IMemberService memberService,
         ILogger<HomeController> logger,
         IUserService userService,
-        IHttpContextAccessor contextAccessor)
+        IHttpContextAccessor contextAccessor,
+        IMemberCompanyService memberCompanyService)
     {
         _memberService = memberService;
         _logger = logger;
         _userService = userService;
         _httpContextAccessor = contextAccessor;
+        _memberCompanyService = memberCompanyService;
     }
 
     public IActionResult Index()
@@ -119,9 +122,32 @@ public class HomeController : Controller
         return View(new LoginViewModel() { returnUrl = loginDetails.returnUrl, username = loginDetails.username });
     }
 
-    public IActionResult Privacy()
+    public IActionResult Companies()
+    {
+        var memberCompanies = _memberCompanyService.GetMemberCompanies().ToList();
+        return View("Companies", memberCompanies);
+    }
+
+    [HttpGet]
+    public IActionResult AddNewMemberCompany()
     {
         return View();
+    }
+
+    [HttpPost]
+    public IActionResult AddNewMemberCompany(MemberCompany company)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogError(string.Join("; ", ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage)));
+            return View(company);
+        }
+
+        _memberCompanyService.AddMemberCompany(company);
+
+        return Index();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
