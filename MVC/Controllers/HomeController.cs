@@ -74,7 +74,7 @@ public class HomeController : Controller
 
         _memberService.AddMember(member);
 
-        return Index();
+        return RedirectToAction("Index", "Home");
     }
 
     public IActionResult GetMember(string memberID)
