@@ -40,6 +40,18 @@ public class HomeController : Controller
                                     .OrderBy(member => member.DOB)
                                     .ToList()
         };
+        var companies = _memberCompanyService.GetMemberCompanies();
+        var companyMap = new Dictionary<string, MemberCompany>();
+
+        foreach (var m in memberViewModel.Members) {
+            var cmatch = companies.FirstOrDefault(c => m.MembershipID.StartsWith(c.MembershipAcronym));
+            if (cmatch != null)
+            {
+                companyMap[m.MembershipID] = cmatch;
+            }
+        }
+
+        memberViewModel.CompanyMap = companyMap;
         return View("Index", memberViewModel);
     }
 
@@ -147,7 +159,7 @@ public class HomeController : Controller
 
         _memberCompanyService.AddMemberCompany(company);
 
-        return Index();
+        return RedirectToAction("Companies", "Home");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

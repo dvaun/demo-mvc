@@ -12,3 +12,30 @@
         </a>
     </div>
 </div>
+
+<table class="table mb-5">
+    <thead>
+        <tr>
+            <th scope="col">Company</th>
+            <th scope="col">Membership Acronym</th>
+            <th scope="col">Company ID#</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var company in Model)
+            {
+                <tr>
+                    <td>@company.Name</td>
+                    <td>@company.MembershipAcronym</td>
+                    <td>@company.Id</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No Companies found!</p>
+        }
+    </tbody>
+</table>
