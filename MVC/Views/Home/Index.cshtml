@@ -2,11 +2,18 @@
     ViewData["Title"] = "Membership List";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Members</h1>
+<div class="text-left flex-row d-flex justify-content-between align-items-center">
+    <h1 class="p-2 display-4">Members</h1>
+    <div class="p-2">
+        <a asp-area="" asp-controller="Home" asp-action="AddNewMember">
+            <button type="button" class="btn btn-link">
+                Add New Member
+            </button>
+        </a>
+    </div>
 </div>
 
-<table class="table">
+<table class="table mb-5">
     <thead>
         <tr>
             <th scope="col">First</th>
